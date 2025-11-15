@@ -1,4 +1,3 @@
-
 CC      = cc
 CFLAGS  = -Wall -Wextra -Werror
 
@@ -30,6 +29,9 @@ NAME_CLIENT = client
 NAME_SERVER_BONUS = server_bonus
 NAME_CLIENT_BONUS = client_bonus
 
+# Default rule
+all: $(NAME_SERVER) $(NAME_CLIENT)
+
 # Server build
 #	-C //go to ./libft and run 'make'. -L//Find libery .a. -lft link the Function from libery
 $(NAME_SERVER): $(SERVER_OBJ)
@@ -50,9 +52,6 @@ $(NAME_SERVER_BONUS): $(SERVER_BONUS_OBJ)
 $(NAME_CLIENT_BONUS): $(CLIENT_BONUS_OBJ)
 	$(MAKE) -C $(LIBFT_DIR)
 	$(CC) $(CFLAGS) $(CLIENT_BONUS_OBJ) -L$(LIBFT_DIR) -lft -o $(NAME_CLIENT_BONUS)
-
-# Default rule
-all: $(NAME_SERVER) $(NAME_CLIENT)
 
 # Bonus rule
 bonus: $(NAME_SERVER_BONUS) $(NAME_CLIENT_BONUS)

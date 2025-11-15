@@ -6,12 +6,19 @@
 /*   By: eskomo <eskomo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 00:45:30 by eskomo            #+#    #+#             */
-/*   Updated: 2025/11/11 01:08:38 by eskomo           ###   ########.fr       */
+/*   Updated: 2025/11/15 04:46:33 by eskomo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "miniTalk.h"
-
+/**
+ * @signum: signal received (SIGUSR1 or SIGUSR2)
+ * Description: This function converts the received bits into characters.
+ * Each time a signal is received, it shifts the current character left by one
+ * bit and adds the new bit (0 for SIGUSR1, 1 for SIGUSR2). When 8 bits have been
+ * received, it writes the character to standard output and resets the character
+ * and bit count.
+ */
 void	bit_to_char(int signum)
 {
 	static char	c;

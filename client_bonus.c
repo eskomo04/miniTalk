@@ -6,7 +6,7 @@
 /*   By: eskomo <eskomo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/05 04:54:42 by eskomo            #+#    #+#             */
-/*   Updated: 2025/11/11 01:07:27 by eskomo           ###   ########.fr       */
+/*   Updated: 2025/11/15 04:23:48 by eskomo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	ft_send_signal(pid_t pid, char c)
 			kill(pid, SIGUSR2);
 		else
 			kill(pid, SIGUSR1);
-		usleep(100);
+		usleep(400);
 		bit++;
 	}
 }
@@ -46,7 +46,7 @@ int	main(int argc, char **argv)
 		write(1, "Must: ./client [PID] [STRING]\n", 32);
 		return (1);
 	}
-	server_pid = (pid_t)atoi(argv[1]);
+	server_pid = (pid_t)ft_atoi(argv[1]);
 	i = 0;
 	while (argv[2][i])
 	{
