@@ -6,56 +6,51 @@
 /*   By: eskomo <eskomo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 00:26:53 by eskomo            #+#    #+#             */
-/*   Updated: 2025/11/17 01:47:16 by eskomo           ###   ########.fr       */
+/*   Updated: 2025/11/17 21:00:36 by eskomo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "miniTalk.h"
 
-volatile int ack = 0;
-
-void ack_handler()
-{
-	ack = 1;
-}
-
-void	ft_send_signal(pid_t pid, char c)
+void	ft_send_signal(pid_t pid, char c, int delay)
 {
 	int	bit;
 
 	bit = 0;
 	while (bit < 8)
 	{
-		ack = 0;
 		if ((c >> (7 - bit)) & 1)
 			kill(pid, SIGUSR2);
 		else
 			kill(pid, SIGUSR1);
+		usleep(delay);
 		bit++;
 	}
-	while (ack == 1)
-		pause();
 }
 
 int	main(int argc, char **argv)
 {
 	pid_t	server_pid;
 	int		i;
+	int		dellay;
 
 	if (argc != 3)
 	{
 		write(1, "Must: ./client [PID] [STRING]\n", 32);
 		return (1);
 	}
+	if (ft_strlen(argv[2]) > 10000)
+		dellay = 600;
+	else
+		dellay = 300;
 	server_pid = (pid_t)ft_atoi(argv[1]);
 	i = 0;
 	while (argv[2][i])
 	{
-		signal(SIGUSR1, ack_handler);
-		ft_send_signal(server_pid, argv[2][i]);
+		ft_send_signal(server_pid, argv[2][i], dellay);
 		i++;
 	}
-	ft_send_signal(server_pid, '\n');
+	ft_send_signal(server_pid, '\n', dellay);
 	return (0);
 }
 
