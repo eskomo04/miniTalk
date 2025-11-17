@@ -6,7 +6,7 @@
 /*   By: eskomo <eskomo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/05 04:54:36 by eskomo            #+#    #+#             */
-/*   Updated: 2025/11/06 03:00:08 by eskomo           ###   ########.fr       */
+/*   Updated: 2025/11/17 01:17:42 by eskomo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,9 @@ void	bit_handler(int signum, siginfo_t *info, void *context)
 	if (bit == 8)
 	{
 		write(1, &c, 1);
-		kill(info->si_pid, SIGUSR1);
 		c = 0;
 		bit = 0;
+		kill(info->si_pid, SIGUSR1);
 	}
 }
 
@@ -49,11 +49,9 @@ int	main(void)
 	write(1, "Server PID: ", 13);
 	ft_putnbr_fd(pid, 1);
 	write(1, "\n", 1);
+	sigaction(SIGUSR1, &act, NULL);
+	sigaction(SIGUSR2, &act, NULL);
 	while (1)
-	{
-		sigaction(SIGUSR1, &act, NULL);
-		sigaction(SIGUSR2, &act, NULL);
 		pause();
-	}
 	return (0);
 }

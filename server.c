@@ -6,7 +6,7 @@
 /*   By: eskomo <eskomo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 00:45:30 by eskomo            #+#    #+#             */
-/*   Updated: 2025/11/15 04:46:33 by eskomo           ###   ########.fr       */
+/*   Updated: 2025/11/17 01:31:34 by eskomo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,12 @@
  * received, it writes the character to standard output and resets the character
  * and bit count.
  */
-void	bit_to_char(int signum)
+void	bit_to_char(int signum, siginfo_t *info, void *context)
 {
 	static char	c;
 	static int	bit;
 
+	(void)context;
 	if (signum == SIGUSR2)
 		c = (c << 1) | 1;
 	else if (signum == SIGUSR1)
@@ -34,6 +35,7 @@ void	bit_to_char(int signum)
 		write(1, &c, 1);
 		c = 0;
 		bit = 0;
+		kill(info->si_pid, SIGUSR1);
 	}
 }
 
@@ -52,13 +54,11 @@ int	main(void)
 	ft_putnbr_fd(pid, 1);
 	write(1, "\n", 1);
 	sigemptyset(&act.sa_mask);
-	act.sa_handler = bit_to_char;
-	act.sa_flags = SA_RESTART;
+	act.sa_sigaction = bit_to_char;
+	act.sa_flags = SA_RESTART | SA_SIGINFO;
+	sigaction(SIGUSR1, &act, NULL);
+	sigaction(SIGUSR2, &act, NULL);
 	while (1)
-	{
-		sigaction(SIGUSR1, &act, NULL);
-		sigaction(SIGUSR2, &act, NULL);
 		pause();
-	}
 	return (0);
 }

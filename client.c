@@ -6,11 +6,18 @@
 /*   By: eskomo <eskomo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 00:26:53 by eskomo            #+#    #+#             */
-/*   Updated: 2025/11/15 04:22:44 by eskomo           ###   ########.fr       */
+/*   Updated: 2025/11/17 01:47:16 by eskomo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "miniTalk.h"
+
+volatile int ack = 0;
+
+void ack_handler()
+{
+	ack = 1;
+}
 
 void	ft_send_signal(pid_t pid, char c)
 {
@@ -19,13 +26,15 @@ void	ft_send_signal(pid_t pid, char c)
 	bit = 0;
 	while (bit < 8)
 	{
+		ack = 0;
 		if ((c >> (7 - bit)) & 1)
 			kill(pid, SIGUSR2);
 		else
 			kill(pid, SIGUSR1);
-		usleep(400);
 		bit++;
 	}
+	while (ack == 1)
+		pause();
 }
 
 int	main(int argc, char **argv)
@@ -42,6 +51,7 @@ int	main(int argc, char **argv)
 	i = 0;
 	while (argv[2][i])
 	{
+		signal(SIGUSR1, ack_handler);
 		ft_send_signal(server_pid, argv[2][i]);
 		i++;
 	}
